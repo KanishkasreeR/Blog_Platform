@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const userRoute = require('./routes/userRoutes');
+const campaignRoute = require('./routes/campaignRoutes')
+const pledgeRoute = require('./routes/pledgeRoutes');
 
 const app = express();
 app.use(bodyparser.json())
@@ -15,7 +17,9 @@ mongoose.connect('mongodb+srv://kanishka:ZzMh63NyKD42Nw8d@cluster05.pgwmpx4.mong
 
 app.set('view engine','ejs');
 
-app.use('/api',userRoute)
+app.use('/api',userRoute);
+app.use('/api',campaignRoute);
+app.use('/api',pledgeRoute);
 
 app.listen(8000,()=>{
     console.log('Server running on port 8000');
