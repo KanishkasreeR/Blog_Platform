@@ -1,49 +1,53 @@
 const Campaign = require('../models/campaignModel');
 
+const { v4: uuidv4 } = require('uuid');
+
 const createCampaign = async (req, res) => {
   try {
-     const {
-        userId,
-        campaignId,
-        cause,
-        goalAmount,
-        title,
-        aim,
-        description,
-        image,
-        startDate,
-        endDate
-     } = req.body;
+    const {
+      cause,
+      goalAmount,
+      title,
+      aim,
+      description,
+      image,
+      startDate,
+      endDate
+    } = req.body;
 
-     const newCampaign = new Campaign({
-        userId,
-        campaignId,
-        cause,
-        goalAmount,
-        currentAmount: 0, 
-        title,
-        aim,
-        description,
-        image,
-        startDate,
-        endDate
-     });
+    const userId = req.user; 
+    const campaignId = uuidv4(); 
 
-     const savedCampaign = await newCampaign.save();
+    const newCampaign = new Campaign({
+      userId,
+      campaignId,
+      cause,
+      goalAmount,
+      currentAmount: 0,
+      title,
+      aim,
+      description,
+      image,
+      startDate,
+      endDate
+    });
 
-     res.status(201).json({
-        success: true,
-        data: savedCampaign
-     });
+    const savedCampaign = await newCampaign.save();
+
+    res.status(201).json({
+      success: true,
+      data: savedCampaign
+    });
   } catch (error) {
-     console.error(error);
-     res.status(500).json({
-        success: false,
-        message: 'An error occurred while creating the campaign',
-        error: error.message
-     });
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while creating the campaign',
+      error: error.message
+    });
   }
 };
+
 
 const addComment = async (req, res) => {
   try {
@@ -194,7 +198,7 @@ const getAllCampaigns = async (req, res) => {
 
 const getCampaignsByUserId = async (req, res) => {
   try {
-     const { userId } = req.params; 
+     const { userId } = req.user; 
      const campaigns = await Campaign.find({ userId });
 
      if (campaigns.length === 0) {
