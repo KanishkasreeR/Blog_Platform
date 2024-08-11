@@ -10,6 +10,6 @@ router.post('/updateCampaign/:campaignId', auth,campaignController.updateCampaig
 router.post('/deleteCampaign/:campaignId', auth,campaignController.deleteCampaign);
 router.get('/getAllCampaigns', campaignController.getAllCampaigns);
 router.get('/getCampaignByuser/:userId',auth, campaignController.getCampaignsByUserId);
-router.get('/getCampaignByuser/:campaignId', campaignController.getCampaignsByUserId);
+router.get('/getCampaignBycampaign/:campaignId', campaignController.getCampaignsByUserId);
 
 module.exports = router;
