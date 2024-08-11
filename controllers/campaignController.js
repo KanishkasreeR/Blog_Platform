@@ -244,21 +244,22 @@ const getAllCampaigns = async (req, res) => {
   }
 };
 
-const getCampaignsByCampaignId = async(req,res)=>{
+const getCampaignsByCampaignId = async (req, res) => {
    try {
-      const {campaignId} = req.params;
-      const campaign = await Campaign.find(campaignId);
-  
-      if (!campaign) {
-        return res.status(404).json({ success: false, message: 'Campaign not found' });
-      }
-  
-      res.json({ success: true, data: campaign });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ success: false, message: 'Server error' });
-    }
-}
+     const { campaignId } = req.params; // Extract campaignId from params
+     const campaign = await Campaign.findOne({ campaignId }); // Query by campaignId
+ 
+     if (!campaign) {
+       return res.status(404).json({ success: false, message: 'Campaign not found' });
+     }
+ 
+     res.json({ success: true, data: campaign });
+   } catch (err) {
+     console.error(err);
+     res.status(500).json({ success: false, message: 'Server error' });
+   }
+ };
+ 
 
 const getCampaignsByUserId = async (req, res) => {
   try {
