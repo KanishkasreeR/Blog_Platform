@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const descriptionSchema = new mongoose.Schema({
    type: {
       type: String,
-      enum: ['text', 'image', 'video'],
-      required: true
+      default: 'text', // Default to 'text' for rich text/HTML
    },
    content: {
       type: String,
@@ -56,7 +55,7 @@ const campaignSchema = new mongoose.Schema({
       type: String,
       required: true
    },
-   description: [descriptionSchema],
+   description: [descriptionSchema], // Array of rich text content
    image: {
       type: String,
       required: true
