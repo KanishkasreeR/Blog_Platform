@@ -51,6 +51,9 @@ const campaignSchema = new mongoose.Schema({
       type: String,
       required: true
    },
+   video:{
+      type:String
+   },
    comments: [commentSchema],
    startDate: {
       type: Date,
