@@ -2,18 +2,23 @@ const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
    userId: {
-      type: String,
-      required: true
+     type: String,
+     required: true
+   },
+   userName: { // Add this field to store user name
+     type: String,
+     required: true
    },
    text: {
-      type: String,
-      required: true
+     type: String,
+     required: true
    },
    createdAt: {
-      type: Date,
-      default: Date.now
+     type: Date,
+     default: Date.now
    }
-});
+ });
+ 
 
 const campaignSchema = new mongoose.Schema({
    userId: {
