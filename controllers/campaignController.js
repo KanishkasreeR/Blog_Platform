@@ -246,7 +246,8 @@ const getAllCampaigns = async (req, res) => {
 
 const getCampaignsByCampaignId = async(req,res)=>{
    try {
-      const campaign = await Campaign.findById(req.params.id);
+      const {campaignId} = req.params;
+      const campaign = await Campaign.find(campaignId);
   
       if (!campaign) {
         return res.status(404).json({ success: false, message: 'Campaign not found' });
