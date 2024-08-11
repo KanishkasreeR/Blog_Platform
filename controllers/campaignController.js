@@ -136,7 +136,7 @@ const createCampaign = async (req, res) => {
 const addComment = async (req, res) => {
    try {
      const { campaignId } = req.params; 
-     const { userId, text } = req.body; 
+     const { text } = req.body; 
  
      const campaign = await Campaign.findOne({ campaignId });
  
@@ -147,18 +147,7 @@ const addComment = async (req, res) => {
        });
      }
  
-     const user = await User.findById(userId); // Fetch user details
- 
-     if (!user) {
-       return res.status(404).json({
-         success: false,
-         message: 'User not found'
-       });
-     }
- 
      campaign.comments.push({
-       userId,
-       userName: user.name, // Add user name
        text,
        createdAt: new Date() 
      });
