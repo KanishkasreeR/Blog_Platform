@@ -2,51 +2,99 @@ const Campaign = require('../models/campaignModel');
 
 const { v4: uuidv4 } = require('uuid');
 
+// const createCampaign = async (req, res) => {
+//   try {
+//     const {
+//       cause,
+//       goalAmount,
+//       title,
+//       aim,
+//       description,
+//       image,
+//       startDate,
+//       endDate
+//     } = req.body;
+
+//     const userId = req.user; 
+//     const campaignId = uuidv4(); 
+
+//     const newCampaign = new Campaign({
+//       userId,
+//       campaignId,
+//       cause,
+//       goalAmount,
+//       currentAmount: 0,
+//       title,
+//       aim,
+//       description,
+//       image,
+//       startDate,
+//       endDate
+//     });
+
+//     const savedCampaign = await newCampaign.save();
+
+//     res.status(201).json({
+//       success: true,
+//       data: savedCampaign
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'An error occurred while creating the campaign',
+//       error: error.message
+//     });
+//   }
+// };
+
 const createCampaign = async (req, res) => {
-  try {
-    const {
-      cause,
-      goalAmount,
-      title,
-      aim,
-      description,
-      image,
-      startDate,
-      endDate
-    } = req.body;
-
-    const userId = req.user; 
-    const campaignId = uuidv4(); 
-
-    const newCampaign = new Campaign({
-      userId,
-      campaignId,
-      cause,
-      goalAmount,
-      currentAmount: 0,
-      title,
-      aim,
-      description,
-      image,
-      startDate,
-      endDate
-    });
-
-    const savedCampaign = await newCampaign.save();
-
-    res.status(201).json({
-      success: true,
-      data: savedCampaign
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: 'An error occurred while creating the campaign',
-      error: error.message
-    });
-  }
-};
+   try {
+     const {
+       cause,
+       goalAmount,
+       title,
+       aim,
+       description,
+       image,
+       video,       // New field for video
+       startDate,
+       endDate
+     } = req.body;
+ 
+     const userId = req.user; 
+     const campaignId = uuidv4(); 
+ 
+     const newCampaign = new Campaign({
+       userId,
+       campaignId,
+       cause,
+       goalAmount,
+       currentAmount: 0, // Initialize the current amount to 0
+       title,
+       aim,
+       description,
+       image,
+       video,           // Include the video field
+       startDate,
+       endDate
+     });
+ 
+     const savedCampaign = await newCampaign.save();
+ 
+     res.status(201).json({
+       success: true,
+       data: savedCampaign
+     });
+   } catch (error) {
+     console.error(error);
+     res.status(500).json({
+       success: false,
+       message: 'An error occurred while creating the campaign',
+       error: error.message
+     });
+   }
+ };
 
 
 const addComment = async (req, res) => {
