@@ -1,16 +1,5 @@
 const mongoose = require('mongoose');
 
-const descriptionSchema = new mongoose.Schema({
-   type: {
-      type: String,
-      default: 'text', // Default to 'text' for rich text/HTML
-   },
-   content: {
-      type: String,
-      required: true
-   }
-});
-
 const commentSchema = new mongoose.Schema({
    userId: {
       type: String,
@@ -54,8 +43,10 @@ const campaignSchema = new mongoose.Schema({
    aim: {
       type: String,
       required: true
-   },
-   description: [descriptionSchema], // Array of rich text content
+   },description: {
+      type: String, // Ensure this is a String type
+      required: true,
+    }, // Array of rich text content
    image: {
       type: String,
       required: true
