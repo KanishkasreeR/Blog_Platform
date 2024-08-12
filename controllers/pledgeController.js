@@ -46,11 +46,6 @@ const getPledgesByCampaignId = async (req, res) => {
    try {
       const { campaignId } = req.params;
       const pledges = await Pledge.find({ campaignId }).populate('backerId', 'name');
-
-      if (pledges.length === 0) {
-         return res.status(404).json({ success: false, message: 'No pledges found for this campaign' });
-      }
-
       const pledge = pledges.map(pledge => ({
          ...pledge.toObject(),
          userName: pledge.backerId.name,  
