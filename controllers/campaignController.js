@@ -58,13 +58,6 @@ const addComment = async (req, res) => {
      const { text } = req.body; 
      const {userId} = req.user;
 
-     if (!userId) {
-      return res.status(404).json({
-         success: false,
-         message: 'Login to add comment'
-      });
-   }
-
      const campaign = await Campaign.findOne({ campaignId });
      const user = await User.findOne({userId});
      const username = user.name;
@@ -75,6 +68,13 @@ const addComment = async (req, res) => {
            message: 'Campaign not found'
         });
      }
+
+     if (!user) {
+      return res.status(404).json({
+         success: false,
+         message: 'user not found'
+      });
+   }
 
 
      campaign.comments.push({
