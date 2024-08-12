@@ -4,7 +4,7 @@ const Campaign = require('../models/campaignModel');
 const createPledge = async (req, res) => {
    try {
       const { campaignId, amount } = req.body;
-      const {backerId} = req.user;
+      const backerId = req.user;
       console.log(backerId);
 
       const campaign = await Campaign.findOne({ campaignId });
