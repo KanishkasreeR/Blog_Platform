@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.post('/createPledge', auth,pledgeController.createPledge);
 router.get('/getAllPledges',auth, pledgeController.getAllPledges);
-router.get('/getPledgesByCampaignId/:campaignId', auth,pledgeController.getPledgesByCampaignId);
-router.get('/getPledgesByBackerId/:backerId', auth,pledgeController.getPledgesByBackerId);
-router.delete('/deletePledge/:pledgeId', auth,pledgeController.deletePledge);
+router.get('/getPledgesByCampaignId/:campaignId',pledgeController.getPledgesByCampaignId);
+router.get('/getPledgesByBackerId/:backerId',pledgeController.getPledgesByBackerId);
+router.delete('/deletePledge/:pledgeId',pledgeController.deletePledge);
 
 module.exports = router;
