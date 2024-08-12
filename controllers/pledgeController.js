@@ -5,6 +5,7 @@ const createPledge = async (req, res) => {
    try {
       const { campaignId, amount } = req.body;
       const {backerId} = req.user;
+      console.log(backerId);
 
       const campaign = await Campaign.findOne({ campaignId });
       if (!campaign) {
