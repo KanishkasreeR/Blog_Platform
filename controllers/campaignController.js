@@ -1,5 +1,6 @@
 const Campaign = require('../models/campaignModel');
 const User = require('../models/userModel');
+const mongoose = require('mongoose');
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -52,88 +53,104 @@ const createCampaign = async (req, res) => {
  };
 
 
-const addComment = async (req, res) => {
-  try {
-     const { campaignId } = req.params; 
-     const { text } = req.body; 
-     const {userId} = req.user;
-
-     const campaign = await Campaign.findOne({ campaignId });
-     const user = await User.findOne({userId});
-     const username = user.name;
-     
-     if (!campaign) {
-        return res.status(404).json({
-           success: false,
-           message: 'Campaign not found'
-        });
-     }
-
-     if (!user) {
-      return res.status(404).json({
-         success: false,
-         message: 'user not found'
-      });
-   }
-
-
-     campaign.comments.push({
-        userId,
-        username,
-        text,
-        createdAt: new Date() 
-     });
-
-     const updatedCampaign = await campaign.save();
-
-     res.status(200).json({
-        success: true,
-        data: updatedCampaign
-     });
-  } catch (error) {
-     console.error(error);
-     res.status(500).json({
-        success: false,
-        message: 'An error occurred while adding the comment',
-        error: error.message
-     });
-  }
-};
-
 // const addComment = async (req, res) => {
-//    try {
+//   try {
 //      const { campaignId } = req.params; 
 //      const { text } = req.body; 
- 
+//      const userId = req.user;
+//      const objectId = new mongoose.Types.ObjectId(userId);
+//      console.log(typeof(userId));
+
 //      const campaign = await Campaign.findOne({ campaignId });
- 
+//      const user = await User.findById(objectId)
+//      console.log(user);
+//      const username = user.name;
+     
 //      if (!campaign) {
-//        return res.status(404).json({
-//          success: false,
-//          message: 'Campaign not found'
-//        });
+//         return res.status(404).json({
+//            success: false,
+//            message: 'Campaign not found'
+//         });
 //      }
- 
+
+//      if (!user) {
+//       return res.status(404).json({
+//          success: false,
+//          message: 'user not found'
+//       });
+//    }
+
+
 //      campaign.comments.push({
-//        text,
-//        createdAt: new Date() 
+//         userId,
+//         username,
+//         text,
+//         createdAt: new Date() 
 //      });
- 
+
 //      const updatedCampaign = await campaign.save();
- 
+
 //      res.status(200).json({
-//        success: true,
-//        data: updatedCampaign
+//         success: true,
+//         data: updatedCampaign
 //      });
-//    } catch (error) {
+//   } catch (error) {
 //      console.error(error);
 //      res.status(500).json({
-//        success: false,
-//        message: 'An error occurred while adding the comment',
-//        error: error.message
+//         success: false,
+//         message: 'An error occurred while adding the comment',
+//         error: error.message
 //      });
-//    }
-//  };
+//   }
+// };
+
+const addComment = async (req, res) => {
+   try {
+     const { campaignId } = req.params;
+     const { text } = req.body;
+     const userId = req.user; 
+ 
+     const objectId = new mongoose.Types.ObjectId(userId);
+ 
+     const campaign = await Campaign.findOne({ campaignId });
+     if (!campaign) {
+       return res.status(404).json({
+         success: false,
+         message: 'Campaign not found'
+       });
+     }
+ 
+     const user = await User.findById(objectId);
+     if (!user) {
+       return res.status(404).json({
+         success: false,
+         message: 'User not found'
+       });
+     }
+     const userName = user.name;
+     campaign.comments.push({
+       userId: user._id.toString(), 
+       userName, 
+       text,
+       createdAt: new Date()
+     });
+ 
+     const updatedCampaign = await campaign.save();
+ 
+     res.status(200).json({
+       success: true,
+       data: updatedCampaign
+     });
+   } catch (error) {
+     console.error(error);
+     res.status(500).json({
+       success: false,
+       message: 'An error occurred while adding the comment',
+       error: error.message
+     });
+   }
+ };
+ 
  
 
 const updateCampaign = async (req, res) => {
