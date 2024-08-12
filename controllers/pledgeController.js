@@ -1,5 +1,7 @@
 const Pledge = require('../models/pledgeModel');
 const Campaign = require('../models/campaignModel');
+const User = require('../models/userModel');
+const mongoose = require('mongoose');
 
 const createPledge = async (req, res) => {
    try {
@@ -43,18 +45,24 @@ const getAllPledges = async (req, res) => {
 const getPledgesByCampaignId = async (req, res) => {
    try {
       const { campaignId } = req.params;
-      const pledges = await Pledge.find({ campaignId });
+      const pledges = await Pledge.find({ campaignId }).populate('backerId', 'name');
 
       if (pledges.length === 0) {
          return res.status(404).json({ success: false, message: 'No pledges found for this campaign' });
       }
 
-      res.status(200).json({ success: true, data: pledges });
+      const pledge = pledges.map(pledge => ({
+         ...pledge.toObject(),
+         userName: pledge.backerId.name,  
+      }));
+
+      res.status(200).json({ success: true, data: pledge });
    } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, message: 'An error occurred while retrieving pledges for the campaign', error: error.message });
    }
 };
+
 
 const getPledgesByBackerId = async (req, res) => {
    try {
