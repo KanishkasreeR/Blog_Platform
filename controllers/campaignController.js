@@ -1,6 +1,6 @@
 const Campaign = require('../models/campaignModel');
 const User = require('../models/userModel');
-const Followe = require('../models/followerModel');
+const Follower = require('../models/followerModel');
 const mongoose = require('mongoose');
 
 const { v4: uuidv4 } = require('uuid');
@@ -150,7 +150,7 @@ const deleteComment = async (req, res) => {
     const { commentId } = req.body;
 
     // Find the campaign
-    const campaign = await Campaign.findOne({ _id: campaignId });
+    const campaign = await Campaign.findOne({ campaignId });
     if (!campaign) {
       return res.status(404).json({
         success: false,
