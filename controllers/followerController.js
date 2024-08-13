@@ -97,11 +97,13 @@ const getUserFollowingCampaigns = async (req, res) => {
 // Check if the user follows a specific campaign
 const isUserFollowingCampaign = async (req, res) => {
     try {
-        const { userId } = req.user;
+        const  userId  = req.user.toString();
         const { campaignId } = req.params;
 
-        const follower = await Follower.findOne({ userId });
+        const follower = await Follower.findOne( {userId} );
+        console.log(follower);
         const isFollowing = follower ? follower.campaignIds.includes(campaignId) : false;
+        console.log(isFollowing);
 
         res.status(200).json({ success: true, data: { isFollowing } });
     } catch (error) {
