@@ -6,10 +6,11 @@ const router = express.Router();
 
 router.post('/createCampaign', auth,campaignController.createCampaign);
 router.post('/addComment/:campaignId',auth,campaignController.addComment);
-router.post('/updateCampaign/:campaignId', auth,campaignController.updateCampaign);
-router.post('/deleteCampaign/:campaignId', auth,campaignController.deleteCampaign);
+router.post('/addPledge/:campaignId',auth,campaignController.addPledgeToCampaign);
+router.put('/updateCampaign/:campaignId', auth,campaignController.updateCampaign);
+router.delete('/deleteCampaign/:campaignId', auth,campaignController.deleteCampaign);
 router.get('/getAllCampaigns', campaignController.getAllCampaigns);
-router.get('/getCampaignByuser/:userId',auth, campaignController.getCampaignsByUserId);
+router.get('/getUserCampaign',auth, campaignController.getCampaignsByUserId);
 router.get('/getCampaignBycampaign/:campaignId', campaignController.getCampaignsByCampaignId);
 
 module.exports = router;

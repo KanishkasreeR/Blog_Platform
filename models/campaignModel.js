@@ -1,22 +1,40 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
-   userId:{
+const pledgeSchema = new mongoose.Schema({
+   backerId: {
+      type: String,
+      required: true
+   },
+   backerName: {
       type: String
    },
-   userName:{
+   amount: {
+      type: Number,  // Array of numbers
+      required: true
+   },
+   createdAt: {
+      type: Date,
+      default: Date.now
+   }
+});
+
+const commentSchema = new mongoose.Schema({
+   userId: {
+      type: String
+   },
+   userName: {
       type: String
    },
    text: {
-     type: String,
-     required: true
+      type: String,
+      required: true
    },
    createdAt: {
-     type: Date,
-     default: Date.now
+      type: Date,
+      default: Date.now
    }
- });
- 
+});
+
 
 const campaignSchema = new mongoose.Schema({
    userId: {
@@ -46,18 +64,20 @@ const campaignSchema = new mongoose.Schema({
    aim: {
       type: String,
       required: true
-   },description: {
-      type: String, // Ensure this is a String type
+   },
+   description: {
+      type: String, 
       required: true,
-    }, // Array of rich text content
+   }, 
    image: {
       type: String,
       required: true
    },
-   video:{
-      type:String
+   video: {
+      type: String
    },
    comments: [commentSchema],
+   pledges: [pledgeSchema], 
    startDate: {
       type: Date,
       required: true

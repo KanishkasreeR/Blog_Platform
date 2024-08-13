@@ -52,58 +52,6 @@ const createCampaign = async (req, res) => {
    }
  };
 
-
-// const addComment = async (req, res) => {
-//   try {
-//      const { campaignId } = req.params; 
-//      const { text } = req.body; 
-//      const userId = req.user;
-//      const objectId = new mongoose.Types.ObjectId(userId);
-//      console.log(typeof(userId));
-
-//      const campaign = await Campaign.findOne({ campaignId });
-//      const user = await User.findById(objectId)
-//      console.log(user);
-//      const username = user.name;
-     
-//      if (!campaign) {
-//         return res.status(404).json({
-//            success: false,
-//            message: 'Campaign not found'
-//         });
-//      }
-
-//      if (!user) {
-//       return res.status(404).json({
-//          success: false,
-//          message: 'user not found'
-//       });
-//    }
-
-
-//      campaign.comments.push({
-//         userId,
-//         username,
-//         text,
-//         createdAt: new Date() 
-//      });
-
-//      const updatedCampaign = await campaign.save();
-
-//      res.status(200).json({
-//         success: true,
-//         data: updatedCampaign
-//      });
-//   } catch (error) {
-//      console.error(error);
-//      res.status(500).json({
-//         success: false,
-//         message: 'An error occurred while adding the comment',
-//         error: error.message
-//      });
-//   }
-// };
-
 const addComment = async (req, res) => {
    try {
      const { campaignId } = req.params;
@@ -150,7 +98,6 @@ const addComment = async (req, res) => {
      });
    }
  };
- 
  
 
 const updateCampaign = async (req, res) => {
@@ -213,24 +160,6 @@ const deleteCampaign = async (req, res) => {
   }
 };
 
-// const getAllCampaigns = async (req, res) => {
-//   try {
-//      const campaigns = await Campaign.find();
-
-//      res.status(200).json({
-//         success: true,
-//         data: campaigns
-//      });
-//   } catch (error) {
-//      console.error(error);
-//      res.status(500).json({
-//         success: false,
-//         message: 'An error occurred while retrieving the campaigns',
-//         error: error.message
-//      });
-//   }
-// };
-
 const getAllCampaigns = async (req, res) => {
   try {
      const campaigns = await Campaign.find();
@@ -266,8 +195,8 @@ const getAllCampaigns = async (req, res) => {
 
 const getCampaignsByCampaignId = async (req, res) => {
    try {
-     const { campaignId } = req.params; // Extract campaignId from params
-     const campaign = await Campaign.findOne({ campaignId }); // Query by campaignId
+     const { campaignId } = req.params; 
+     const campaign = await Campaign.findOne({ campaignId }); 
  
      if (!campaign) {
        return res.status(404).json({ success: false, message: 'Campaign not found' });
@@ -283,8 +212,20 @@ const getCampaignsByCampaignId = async (req, res) => {
 
 const getCampaignsByUserId = async (req, res) => {
   try {
-     const { userId } = req.user; 
-     const campaigns = await Campaign.find({ userId });
+     if (!req.user) {
+        return res.status(400).json({
+           success: false,
+           message: 'User not authenticated or userId is missing'
+        });
+     }
+
+     const  user  = req.user; 
+     console.log(user);
+     const userId = user.toString();
+     console.log(typeof(userId));
+
+     const campaigns = await Campaign.find( {userId} );
+     console.log(campaigns);
 
      if (campaigns.length === 0) {
         return res.status(404).json({
@@ -307,4 +248,50 @@ const getCampaignsByUserId = async (req, res) => {
   }
 };
 
-module.exports = { createCampaign, addComment, updateCampaign, deleteCampaign, getAllCampaigns, getCampaignsByUserId, getCampaignsByCampaignId};
+
+const addPledgeToCampaign = async (req, res) => {
+  try {
+    const { campaignId } = req.params;
+    const { amount } = req.body;
+
+    if (typeof amount !== 'number') {
+      return res.status(400).json({ message: 'Amount must be a number' });
+    }
+    const backerId = req.user;
+    const user = await User.findById(backerId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const backerName = user.name; 
+
+    const newPledge = {
+      backerId,
+      backerName,
+      amount,
+      createdAt: new Date(),
+    };
+
+    const campaign = await Campaign.findOne({campaignId});
+    if (!campaign) {
+      return res.status(404).json({ message: 'Campaign not found' });
+    }
+
+    campaign.pledges.push(newPledge);
+    campaign.currentAmount += amount;
+    await campaign.save();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        newPledge,
+        updatedAmount: campaign.currentAmount,
+        pledges: campaign.pledges
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred', error: error.message });
+  }
+};
+
+
+module.exports = { createCampaign, addComment, updateCampaign, deleteCampaign, getAllCampaigns, getCampaignsByUserId, getCampaignsByCampaignId,addPledgeToCampaign};
