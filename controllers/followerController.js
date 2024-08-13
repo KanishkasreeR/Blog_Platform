@@ -1,14 +1,43 @@
 const Follower = require('../models/followerModel');
 
 // Follow a campaign
+// const followCampaign = async (req, res) => {
+//     try {
+//         const  userId  = req.user;
+//         const { campaignId } = req.body; 
+//         const user = userId.toString();
+
+//         // Check if the user already follows this campaign
+//         const existingFollower = await Follower.findOne({user});
+
+//         if (existingFollower) {
+//             if (existingFollower.campaignIds.includes(campaignId)) {
+//                 return res.status(400).json({ success: false, message: 'You are already following this campaign' });
+//             } else {
+//                 existingFollower.campaignIds.push(campaignId);
+//                 await existingFollower.save();
+//                 return res.status(200).json({ success: true, data: existingFollower });
+//             }
+//         }
+
+//         // If the user is not following any campaigns yet
+//         const newFollower = new Follower({ userId, campaignIds: [campaignId] });
+//         await newFollower.save();
+
+//         res.status(201).json({ success: true, data: newFollower });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ success: false, message: 'An error occurred while following the campaign' });
+//     }
+// };
+
 const followCampaign = async (req, res) => {
     try {
-        const  userId  = req.user;
-        const { campaignId } = req.body; 
-        const user = userId.toString();
+        const userId = req.user.toString(); // Ensure userId is a string
+        const { campaignId } = req.body;
 
         // Check if the user already follows this campaign
-        const existingFollower = await Follower.findOne({user});
+        let existingFollower = await Follower.findOne({ userId });
 
         if (existingFollower) {
             if (existingFollower.campaignIds.includes(campaignId)) {
@@ -30,6 +59,7 @@ const followCampaign = async (req, res) => {
         res.status(500).json({ success: false, message: 'An error occurred while following the campaign' });
     }
 };
+
 
 // Unfollow a campaign
 // const unfollowCampaign = async (req, res) => {

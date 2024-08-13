@@ -144,43 +144,84 @@ const addComment = async (req, res) => {
 };
 
 
+// const deleteComment = async (req, res) => {
+//   try {
+//     const { campaignId } = req.params;
+//     const { commentId } = req.body;
+
+//     // Find the campaign
+//     const campaign = await Campaign.findOne({ campaignId });
+//     if (!campaign) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Campaign not found'
+//       });
+//     }
+
+//     // Remove the comment from the campaign's comments array
+//     const result = await Campaign.updateOne(
+//       { _id: campaignId },
+//       { $pull: { comments: { _id: commentId } } }
+//     );
+
+//     if (result.nModified === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Comment not found'
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Comment successfully deleted'
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'An error occurred while deleting the comment',
+//       error: error.message
+//     });
+//   }
+// };
+
 const deleteComment = async (req, res) => {
   try {
     const { campaignId } = req.params;
     const { commentId } = req.body;
 
-    // Find the campaign
+    // Find the campaign using the UUID
     const campaign = await Campaign.findOne({ campaignId });
     if (!campaign) {
       return res.status(404).json({
         success: false,
-        message: 'Campaign not found'
+        message: 'Campaign not found',
       });
     }
 
-    // Remove the comment from the campaign's comments array
+    // Use $pull to remove the comment from the comments array
     const result = await Campaign.updateOne(
-      { _id: campaignId },
+      { campaignId }, // Query by UUID field
       { $pull: { comments: { _id: commentId } } }
     );
 
     if (result.nModified === 0) {
       return res.status(404).json({
         success: false,
-        message: 'Comment not found'
+        message: 'Comment not found',
       });
     }
 
     res.status(200).json({
       success: true,
-      message: 'Comment successfully deleted'
+      message: 'Comment successfully deleted',
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
       message: 'An error occurred while deleting the comment',
-      error: error.message
+      error: error.message,
     });
   }
 };
