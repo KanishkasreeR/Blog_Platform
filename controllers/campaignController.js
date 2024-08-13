@@ -1,5 +1,6 @@
 const Campaign = require('../models/campaignModel');
 const User = require('../models/userModel');
+const Followe = require('../models/followerModel');
 const mongoose = require('mongoose');
 
 const { v4: uuidv4 } = require('uuid');
@@ -146,10 +147,10 @@ const addComment = async (req, res) => {
 const deleteComment = async (req, res) => {
   try {
     const { campaignId } = req.params;
-    const {commentId} = req.body;
+    const { commentId } = req.body;
 
     // Find the campaign
-    const campaign = await Campaign.findOne({ campaignId });
+    const campaign = await Campaign.findOne({ _id: campaignId });
     if (!campaign) {
       return res.status(404).json({
         success: false,
@@ -157,23 +158,22 @@ const deleteComment = async (req, res) => {
       });
     }
 
-    // Find the comment and remove it
-    const comment = campaign.comments.id(commentId);
-    if (!comment) {
+    // Remove the comment from the campaign's comments array
+    const result = await Campaign.updateOne(
+      { _id: campaignId },
+      { $pull: { comments: { _id: commentId } } }
+    );
+
+    if (result.nModified === 0) {
       return res.status(404).json({
         success: false,
         message: 'Comment not found'
       });
     }
 
-    comment.remove();
-
-    const updatedCampaign = await campaign.save();
-
     res.status(200).json({
       success: true,
-      message: 'Comment successfully deleted',
-      data: updatedCampaign
+      message: 'Comment successfully deleted'
     });
   } catch (error) {
     console.error(error);
