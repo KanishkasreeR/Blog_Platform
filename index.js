@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const userRoute = require('./routes/userRoutes');
 const campaignRoute = require('./routes/campaignRoutes')
+const followerRoute = require('./routes/followerRoutes');
 
 const app = express();
 app.use(bodyparser.json())
@@ -18,6 +19,7 @@ app.set('view engine','ejs');
 
 app.use('/api',userRoute);
 app.use('/api',campaignRoute);
+app.use('/api',followerRoute);
 
 app.listen(8000,()=>{
     console.log('Server running on port 8000');

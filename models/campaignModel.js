@@ -9,7 +9,7 @@ const pledgeSchema = new mongoose.Schema({
       type: String
    },
    amount: {
-      type: Number,  // Array of numbers
+      type: Number,  
       required: true
    },
    createdAt: {
