@@ -106,7 +106,6 @@ const addComment = async (req, res) => {
     const { campaignId} = req.params;
     const { text,commentId } = req.body;
     
-    // Find the campaign
     const campaign = await Campaign.findOne({ campaignId });
     if (!campaign) {
       return res.status(404).json({
@@ -115,7 +114,6 @@ const addComment = async (req, res) => {
       });
     }
 
-    // Find the comment and update it
     const comment = campaign.comments.id(commentId);
     if (!comment) {
       return res.status(404).json({
@@ -125,7 +123,7 @@ const addComment = async (req, res) => {
     }
 
     comment.text = text;
-    comment.createdAt = new Date(); // Optionally update the createdAt timestamp
+    comment.createdAt = new Date(); 
 
     const updatedCampaign = await campaign.save();
 
@@ -148,7 +146,6 @@ const deleteComment = async (req, res) => {
     const { campaignId } = req.params;
     const { commentId } = req.body;
 
-    // Find the campaign by the UUID campaignId
     const campaign = await Campaign.findOne({ campaignId });
     if (!campaign) {
       return res.status(404).json({
@@ -157,9 +154,8 @@ const deleteComment = async (req, res) => {
       });
     }
 
-    // Use $pull to remove the comment from the comments array
     const result = await Campaign.updateOne(
-      { campaignId }, // Query using the UUID field
+      { campaignId }, 
       { $pull: { comments: { _id: commentId } } }
     );
 
