@@ -102,8 +102,8 @@ const addComment = async (req, res) => {
 
  const editComment = async (req, res) => {
   try {
-    const { campaignId, commentId } = req.query;
-    const { text } = req.body;
+    const { campaignId} = req.params;
+    const { text,commentId } = req.body;
     
     // Find the campaign
     const campaign = await Campaign.findOne({ campaignId });
@@ -145,7 +145,8 @@ const addComment = async (req, res) => {
 
 const deleteComment = async (req, res) => {
   try {
-    const { campaignId, commentId } = req.params;
+    const { campaignId } = req.params;
+    const {commentId} = req.body;
 
     // Find the campaign
     const campaign = await Campaign.findOne({ campaignId });
