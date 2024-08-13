@@ -100,6 +100,91 @@ const addComment = async (req, res) => {
  };
  
 
+ const editComment = async (req, res) => {
+  try {
+    const { campaignId, commentId } = req.query;
+    const { text } = req.body;
+    
+    // Find the campaign
+    const campaign = await Campaign.findOne({ campaignId });
+    if (!campaign) {
+      return res.status(404).json({
+        success: false,
+        message: 'Campaign not found'
+      });
+    }
+
+    // Find the comment and update it
+    const comment = campaign.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Comment not found'
+      });
+    }
+
+    comment.text = text;
+    comment.createdAt = new Date(); // Optionally update the createdAt timestamp
+
+    const updatedCampaign = await campaign.save();
+
+    res.status(200).json({
+      success: true,
+      data: updatedCampaign
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while editing the comment',
+      error: error.message
+    });
+  }
+};
+
+
+const deleteComment = async (req, res) => {
+  try {
+    const { campaignId, commentId } = req.params;
+
+    // Find the campaign
+    const campaign = await Campaign.findOne({ campaignId });
+    if (!campaign) {
+      return res.status(404).json({
+        success: false,
+        message: 'Campaign not found'
+      });
+    }
+
+    // Find the comment and remove it
+    const comment = campaign.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Comment not found'
+      });
+    }
+
+    comment.remove();
+
+    const updatedCampaign = await campaign.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Comment successfully deleted',
+      data: updatedCampaign
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while deleting the comment',
+      error: error.message
+    });
+  }
+};
+
+
 const updateCampaign = async (req, res) => {
   try {
      const { campaignId } = req.params; 
@@ -144,6 +229,11 @@ const deleteCampaign = async (req, res) => {
            message: 'Campaign not found'
         });
      }
+
+     await Follower.updateMany(
+      { campaignIds: campaignId },
+      { $pull: { campaignIds: campaignId } }
+    );
 
      res.status(200).json({
         success: true,
@@ -294,4 +384,4 @@ const addPledgeToCampaign = async (req, res) => {
 };
 
 
-module.exports = { createCampaign, addComment, updateCampaign, deleteCampaign, getAllCampaigns, getCampaignsByUserId, getCampaignsByCampaignId,addPledgeToCampaign};
+module.exports = { createCampaign, addComment, updateCampaign, deleteCampaign, getAllCampaigns, getCampaignsByUserId, getCampaignsByCampaignId,addPledgeToCampaign,deleteComment,editComment};
