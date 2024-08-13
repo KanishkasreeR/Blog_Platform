@@ -34,27 +34,19 @@ const followCampaign = async (req, res) => {
 // Unfollow a campaign
 const unfollowCampaign = async (req, res) => {
     try {
-        const userId = req.user.toString(); // Ensure userId is a string
-        const { campaignId } = req.body;
-
-        // Find the existing follower
+        const userId = req.user.toString();
+        const { campaignId } = req.body.toString();
         const existingFollower = await Follower.findOne({ userId });
 
-        console.log(existingFollower); // For debugging
-
-        // Check if the follower exists and if they are following the campaign
+        console.log(existingFollower.campaignIds.includes(campaignId));
         if (!existingFollower || !existingFollower.campaignIds.includes(campaignId)) {
             return res.status(404).json({ success: false, message: 'You are not following this campaign' });
         }
-
-        // Remove the campaignId from the follower's list
         existingFollower.campaignIds = existingFollower.campaignIds.filter(id => id !== campaignId);
 
-        // If there are no more campaigns, delete the follower
         if (existingFollower.campaignIds.length === 0) {
             await Follower.deleteOne({ userId });
         } else {
-            // Otherwise, save the updated follower document
             await existingFollower.save();
         }
 
